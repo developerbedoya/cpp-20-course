@@ -1,0 +1,43 @@
+#!/bin/bash
+
+## Creates a new directory (specified in the parameter) and copies there the C++ for this course.
+
+templates_directory="$(pwd)/chapter04/all-compilers"
+
+show_help() {
+    cat <<EOF
+
+Usage: 
+    $basename $0 new_directory_location
+
+Example:
+    $basename $0 chapter08/041-decimals-and-integers
+
+EOF
+}
+
+
+if [ "$#" -ne 1 ]; then
+    echo "Illegal number of parameters"
+    show_help
+    exit 2
+fi
+
+## Verifies if folder is not the working directory
+if [ "$(readlink -f "$1")" = "$(readlink -f "$(pwd)")" ]; then
+    echo "Cannot copy over current directory"
+    exit 2
+fi
+
+## Creates folder structure
+mkdir -p "$1"
+if [ -d "$1" ]; then
+    rm -R "$1"
+fi
+
+## Copy template to destination
+cp -R "$templates_directory" "$1"
+
+## Opens destination with Visual Studio Code
+DISPLAY=:0 code "$1"
+exit 0
